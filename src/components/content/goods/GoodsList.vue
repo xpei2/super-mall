@@ -1,20 +1,30 @@
 <template>
-   <div class="goods">
-       <goods-list-item v-for="item in goodsList" :goodsItem="item" :key="item.image"/>
-   </div>
+    <div class="goods">
+        <goods-list-item v-for="item in goods" :goodsItem="item" :key="item.image" />
+    </div>
 </template>
 
 <script>
 import GoodsListItem from './GoodsListItem';
 export default {
-   name: 'GoodList',
-   props: {
-       goodsList: Array
-   },
-   components: {
-       GoodsListItem
-   }
-}
+    name: 'GoodList',
+    props: {
+        goodsList: Array
+    },
+    components: {
+        GoodsListItem
+    },
+    computed: {
+        goods() {
+            return this.goodsList.map(item => {
+                // 处理图片链接
+                let json = item;
+                json.image = item.show.img;
+                return json;
+            });
+        }
+    }
+};
 </script>
 
 <style scoped>

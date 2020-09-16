@@ -1,9 +1,7 @@
 <template>
-    <div class="better-scroll" ref="btscroll">
+    <div class="better-scroll" ref="bsScroll">
         <div class="better-content">
-            <!-- <div class="pull-msg pull-msg-up">{{pullDownMsg}}</div> -->
             <slot></slot>
-            <!-- <div class="pull-msg pull-msg-down">{{pullUpMsg}}</div> -->
         </div>
     </div>
 </template>
@@ -13,30 +11,97 @@ import BScroll from 'better-scroll';
 
 export default {
     name: 'Bscroll',
+    props: {
+        /**
+         * 1 滚动的时候会派发scroll事件，会截流。
+         * 2 滚动的时候实时派发scroll事件，不会截流。
+         * 3 除了实时派发scroll事件，在swipe的情况下仍然能实时派发scroll事件
+         */
+        probeType: {
+            type: Number,
+            default: 1
+        },
+        // 是否派发鼠标滚轮
+        mouseWheel: {
+            type: Boolean,
+            default: false
+        },
+        // 点击列表是否派发click事件
+        click: {
+            type: Boolean,
+            default: true
+        },
+        // 是否派发滚动事件
+        listenScroll: {
+            type: Boolean,
+            default: false
+        },
+        // 是否派发滚动到底部的事件，用于上拉加载
+        pullUp: {
+            type: Boolean,
+            default: false
+        },
+        // 是否派发顶部下拉的事件，用于下拉刷新
+        pulldown: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
-            bsScroll: null
+            scroll: null
         };
     },
     // 组件创建完后调用
     mounted() {
-        this.bsScroll = new BScroll(this.$refs.btscroll, {
-            probeType: 2,
-            // pullUpLoad: true, //监听是否滚动到底部
-            click: true,      //滚动内部点击事件是否有效
+        this.$nextTick(() => {
+            this._initScroll();
         });
-        // this.bsScroll.on('scroll', pos => {
-        //     if (pos.y > 40 && pos.y < 100) {
-        //         this.pullDownMsg = '下拉刷新，发现更多';
-        //     }else if(pos.y <40) {
-        //         this.pullDownMsg = ''
-        //     }
-        // });
-        // this.bsScroll.on('touchEnd', pos => {
-        //     if (pos.y > 40) {
-        //         console.log('加载中...');
-        //     }
-        // });
+    },
+    methods: {
+        _initScroll() {
+            // 初始化
+            this.scroll = new BScroll(this.$refs.bsScroll, {
+                probeType: this.probeType,
+                mouseWheel: this.mouseWheel,
+                // bounce: false,
+                click: this.click
+            });
+            // 滚动位置监听
+            if (this.listenScroll) {
+                this.scroll.on('scroll', pos => {
+                    this.$emit('scroll', pos.y);
+                });
+            }
+            // 监听上拉事件
+            if (this.pullUp) {
+                this.scroll.on('scrollEnd', pos => {
+                    if (pos.y <= this.scroll.maxScrollY + 50) {
+                        this.$emit('scrollEnd');
+                    }
+                });
+            }
+            // 是否派发顶部下拉事件，用于下拉刷新
+            if (this.pulldown) {
+                this.scroll.on('touchend', pos => {
+                    // 下拉动作
+                    if (pos.y > 50) {
+                        this.$emit('pulldown');
+                    }
+                });
+            }
+        },
+        refresh() {
+            // 代理better-scroll的refresh方法，重新计算高度
+            this.scroll && this.scroll.refresh();
+        },
+        scrollTo(x, y, time = 300) {
+            // 代理better-scroll的scrollTo方法
+            this.scroll && this.scroll.scrollTo(x, y, time);
+        },
+        getScrollY() {
+            return this.scroll ? this.scroll.y : 0
+        }
     }
 };
 </script>

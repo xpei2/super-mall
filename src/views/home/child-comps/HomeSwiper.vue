@@ -2,7 +2,7 @@
   <swiper ref="mySwiper" :options="swiperOptions">
     <swiper-slide v-for="item in banners" :key="item.image">
       <a :href="item.link">
-        <img :src="item.image" :alt="item.title" />
+        <img :src="item.image" :alt="item.title" @load="swiperLoad"/>
       </a>
     </swiper-slide>
     <div class="swiper-pagination" slot="pagination"></div>
@@ -29,7 +29,8 @@ export default {
           delay: 3000 //1秒切换一次
         },
         loop: true
-      }
+      },
+      isLoad: false
     };
   },
   components: {
@@ -43,6 +44,14 @@ export default {
     swiper() {
       return this.$refs.mySwiper.$swiper;
     }
+  },
+  methods: {
+      swiperLoad() {
+          if(!this.isLoad) {
+              this.$emit('swiperImgLoad');
+              this.isLoad = true
+          }
+      }
   }
 };
 </script>

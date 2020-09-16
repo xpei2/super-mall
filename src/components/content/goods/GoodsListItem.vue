@@ -1,7 +1,7 @@
 <template>
     <div class="goods-item">
         <a class="goods-img" :href="goodsItem.link">
-            <img :src="goodsItem.show.img" alt />
+            <img :src="goodsItem.image" :alt="goodsItem.title" @load="imageLoad"/>
         </a>
         <a class="good-info" :href="goodsItem.link">
             <p class="goods-title">{{goodsItem.title}}</p>
@@ -20,14 +20,13 @@ export default {
         goodsItem: {
             type: Object,
             default() {
-                return {
-                    title: '暂无内容',
-                    img: '',
-                    price: '00.00',
-                    orgPrice: '00.00',
-                    cfav: '0'
-                };
+                return {}
             }
+        }
+    },
+    methods: {
+        imageLoad() {
+            this.$bus.$emit('itemImageLoad')
         }
     },
     filters: {
