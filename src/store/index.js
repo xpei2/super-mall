@@ -1,17 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import getters from './getter'
+import mutations from './mutations'
+import actions from './actions'
 
 Vue.use(Vuex)
 
+const state = {
+  // 默认展示tabbar
+  tabBarShow: true
+}
+
 export default new Vuex.Store({
-  state: {
-    homeTabIndex: 0
-  },
-  mutations: {
-    homeTabIndex(state, index) {
-      state.homeTabIndex = index
-    }
-  },
-  actions: {},
-  modules: {}
+  state,
+  getters,
+  mutations,
+  actions
 })

@@ -1,13 +1,13 @@
 <template>
-    <div class="goods-item">
-        <a class="goods-img" :href="goodsItem.link">
-            <img :src="goodsItem.image" :alt="goodsItem.title" @load="imageLoad"/>
+    <div class="goods-item" @click="goodsClick">
+        <a class="goods-img">
+            <img :src="goodsItem.image" :alt="goodsItem.title" @load="imageLoad" />
         </a>
-        <a class="good-info" :href="goodsItem.link">
+        <a class="good-info">
             <p class="goods-title">{{goodsItem.title}}</p>
             <p class="good-price-box">
-            <span class="goods-price">{{goodsItem.price | newPrice}}</span>
-            <span class="goods-collect">{{goodsItem.cfav}}</span>
+                <span class="goods-price">{{goodsItem.price | newPrice}}</span>
+                <span class="goods-collect">{{goodsItem.cfav}}</span>
             </p>
         </a>
     </div>
@@ -20,13 +20,16 @@ export default {
         goodsItem: {
             type: Object,
             default() {
-                return {}
+                return {};
             }
         }
     },
     methods: {
         imageLoad() {
-            this.$bus.$emit('itemImageLoad')
+            this.$bus.$emit('itemImageLoad');
+        },
+        goodsClick() {
+            this.$router.push('/detail/' + this.goodsItem.iid)
         }
     },
     filters: {
@@ -61,7 +64,7 @@ export default {
     width: 100%;
 }
 .good-info {
-padding: 0 10px;
+    padding: 0 10px;
 }
 .goods-title {
     display: -webkit-box;
@@ -84,26 +87,26 @@ padding: 0 10px;
     color: var(--color-high-text);
 }
 
-  .goods-collect {
+.goods-collect {
     position: relative;
     padding-left: 16px;
-  }
+}
 
-  .goods-collect::before {
+.goods-collect::before {
     content: '';
     position: absolute;
     left: 0;
     top: 0;
     width: 14px;
     height: 14px;
-    background: url("~_ats/img/common/collect.svg") 0 0/14px 14px;
-  }
-  @media screen and (max-width: 480px) {
-      .goods-img {
-          height: 200px;
-      }
-      .goods-img img {
-          width: 120%;
-      }
-  }
+    background: url('~_ats/img/common/collect.svg') 0 0/14px 14px;
+}
+@media screen and (max-width: 480px) {
+    .goods-img {
+        height: 200px;
+    }
+    .goods-img img {
+        width: 120%;
+    }
+}
 </style>

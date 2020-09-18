@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: ''
+  name: 'NavBar'
 };
 </script>
 
@@ -27,8 +27,9 @@ export default {
 .nav-left,
 .nav-right,
 .nav-center {
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .nav-left,
 .nav-right {

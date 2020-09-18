@@ -12,7 +12,7 @@
         />
         <bscroll
             class="bscroll-style"
-            ref="scroll"
+            ref="hmoeScroll"
             :probe-type="3"
             :mouse-wheel="true"
             :pull-up="true"
@@ -20,7 +20,7 @@
             @scroll="contScroll"
             @scrollEnd="contScrollEnd"
         >
-            <home-swiper :banners="banners" @swiperImgLoad="swiperImgLoad" />
+            <bs-swiper :banners="homeBanners" />
             <recommend-view :recommends="recommend" />
             <feature-view />
             <tab-control
@@ -39,12 +39,13 @@
 // 公共组件
 import NavBar from '_com/common/navbar/NavBar';
 import Bscroll from '_com/common/bscroll/Bscroll';
+import BsSwiper from '_com/common/bsswiper/BsSwiper';
 import TabControl from '_com/content/tab-control/TabControl';
 import GoodsList from '_com/content/goods/GoodsList';
 import BackTop from '_com/content/back-top/BackTop';
 
 // 子组件
-import HomeSwiper from './child-comps/HomeSwiper';
+// import HomeSwiper from './child-comps/HomeSwiper';
 import RecommendView from './child-comps/RecommendView';
 import FeatureView from './child-comps/FeatureView';
 
@@ -59,16 +60,17 @@ export default {
     components: {
         NavBar,
         Bscroll,
+        BsSwiper,
         TabControl,
         GoodsList,
         BackTop,
-        HomeSwiper,
         RecommendView,
         FeatureView
     },
     data() {
         return {
-            banners: [],
+            // 首页轮播数据
+            homeBanners: [],
             recommend: [],
             keywords: [],
             titles: ['流行', '精选', '新款'],
@@ -98,17 +100,21 @@ export default {
     },
     mounted() {
         // 1.监听商品图片加载完成
-        const refresh = debounce(this.$refs.scroll.refresh, 200);
+        const refresh = debounce(this.$refs.hmoeScroll.refresh, 200);
         this.$bus.$on('itemImageLoad', () => {
             refresh();
         });
+        // 监听swiper的图片加载完成，并获取tabControl的offsetTop
+        this.$bus.$on('swiperImgLoad', () => {
+            this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
+        });
     },
     activated() {
-        this.$refs.scroll.scrollTo(0, this.saveY, 0);
-        this.$refs.scroll.refresh()
+        this.$refs.hmoeScroll.refresh();
     },
     deactivated() {
-        this.saveY = this.$refs.scroll.getScrollY();
+        // 取消detail组件事件总线的监听
+        this.$bus.$off('swiperImgLoad');
     },
     computed: {
         showGoods() {
@@ -119,10 +125,6 @@ export default {
         /**
          * 事件监听相关方法
          */
-        // 监听swiper的图片加载完成，并获取tabControl的offsetTop
-        swiperImgLoad() {
-            this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
-        },
         // 监听tabCtrol的点击事件
         tabClick(index) {
             switch (index) {
@@ -144,7 +146,7 @@ export default {
         backClick() {
             // 1. 利用监听组件的原生事件.native 然后取得bsBcroll组件的属性，就是scroll对象，
             // 2. 用scroll组件内部的封装的scrollTo方法，此处不是better-scroll的原生方法
-            this.$refs.scroll.scrollTo(0, 0);
+            this.$refs.hmoeScroll.scrollTo(0, 0);
         },
 
         // 监听滚动位置的自定义事件
@@ -166,7 +168,7 @@ export default {
          */
         getHomeMultidata() {
             getHomeMultidata().then(res => {
-                this.banners = res.data.banner.list;
+                this.homeBanners = res.data.banner.list;
                 this.recommend = res.data.recommend.list;
                 this.keywords = res.data.keywords.list;
             });
