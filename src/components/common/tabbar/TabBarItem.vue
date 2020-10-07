@@ -22,9 +22,6 @@ export default {
       default: "#d81e06",
     },
   },
-  data() {
-    return {};
-  },
   computed: {
     isActive() {
       return this.$route.path.includes(this.path);
@@ -54,5 +51,6 @@ export default {
 .tab-bar-item img {
   width: 20px;
   vertical-align: middle;
+  margin-bottom: 3px;
 }
 </style>

@@ -30,7 +30,6 @@
         <div class="shop-bottom">
             <div class="enter-shop" @click="enterShop">进店逛逛</div>
         </div>
-        <div class="shop-msg" :class="{'shop-msg-show' : isShowMsg}">店铺未开通</div>
     </div>
 </template>
 
@@ -45,11 +44,6 @@ export default {
             }
         }
     },
-    data() {
-        return {
-            isShowMsg: false
-        };
-    },
     filters: {
         sellCountFilter(value) {
             return value < 10000 ? value : (value / 10000).toFixed(1) + '万';
@@ -57,11 +51,7 @@ export default {
     },
     methods: {
         enterShop() {
-            this.isShowMsg = true;
-            let shopTimer = setTimeout(() => {
-                this.isShowMsg = false;
-                clearTimeout(shopTimer);
-            }, 2000);
+            this.$toast("暂无法进入店铺");
         }
     }
 };
@@ -147,21 +137,5 @@ export default {
     border-radius: 10px;
     background-color: #f2f5f8;
 }
-.shop-msg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 9;
-    padding: 6px 30px;
-    border-radius: 5px;
-    font-size: 14px;
-    background-color: #8e8e8e;
-    color: #f1f1f1;
-    opacity: 0;
-    transform: translate(-50%, -50%);
-    transition: all 0.3s;
-}
-.shop-msg-show {
-    opacity: 1;
-}
+
 </style>

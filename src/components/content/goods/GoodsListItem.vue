@@ -1,27 +1,36 @@
 <template>
     <div class="goods-item" @click="goodsClick">
         <a class="goods-img">
-            <img :src="goodsItem.image" :alt="goodsItem.title" @load="imageLoad" />
+            <img v-lazy="goodsImage" :alt="product.title" @load="imageLoad" />
         </a>
         <a class="good-info">
-            <p class="goods-title">{{goodsItem.title}}</p>
+            <p class="goods-title">{{ product.title }}</p>
             <p class="good-price-box">
-                <span class="goods-price">{{goodsItem.price | newPrice}}</span>
-                <span class="goods-collect">{{goodsItem.cfav}}</span>
+                <span class="goods-price">{{ product.price | newPrice }}</span>
+                <span class="goods-collect">{{ product.cfav }}</span>
             </p>
         </a>
     </div>
 </template>
 
 <script>
+import { getDetailGoods } from '_new/detail';
+
 export default {
     name: 'GoodListItem',
     props: {
-        goodsItem: {
+        product: {
             type: Object,
             default() {
                 return {};
             }
+        }
+    },
+    computed: {
+        goodsImage() {
+            return (
+                this.product.img || this.product.image || this.product.show.img
+            );
         }
     },
     methods: {
@@ -29,7 +38,25 @@ export default {
             this.$bus.$emit('itemImageLoad');
         },
         goodsClick() {
-            this.$router.push('/detail/' + this.goodsItem.iid)
+            // 点击时暂时取消加载提示
+            this.$store.commit('setLoading', false);
+            // 点击时先获取数据查看商品是否存在
+            getDetailGoods(this.product.iid)
+                .then(() => {
+                    // 如果成功，开启加载提示，并跳转至详情页
+                    this.$store.commit('setLoading', true);
+                    this.$router.push('/detail/' + this.product.iid);
+                })
+                .catch(() => {
+                    this.$toast({
+                        type: 'success',
+                        icon: 'cross',
+                        message: '商品已下架！',
+                        // 弹框的时候禁止点击
+                        forbidClick: true,
+                        duration: 1500
+                    });
+                });
         }
     },
     filters: {

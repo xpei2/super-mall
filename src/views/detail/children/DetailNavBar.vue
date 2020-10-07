@@ -6,7 +6,7 @@
             <template v-slot:nav-center>
                 <span
                     v-for="(value, index) in titles"
-                    :key="value"
+                    :key="index"
                     class="title-item"
                     :class="{'title-active': currentIndex === index}"
                     @click="titleClick(index)"
@@ -30,7 +30,8 @@ export default {
     },
     methods:{
         titleClick(index) {
-            this.currentIndex = index
+            this.currentIndex = index;
+            this.$emit('titleClick', index)
         },
         backClick() {
             this.$router.back()

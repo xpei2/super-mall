@@ -7,9 +7,10 @@
             <span class="desc-border desc-border-b"></span>
         </div>
         <ul class="goods-image">
-            <li v-for="item in goodsInfo.detailImage" :key="item.key">
+            <li class="goods-image-item" v-for="item in goodsInfo.detailImage" :key="item.key">
                 <h3 class="base-info-msg"><span>{{item.key}}</span></h3>
-                <div class="image-list">
+                <div class="goods-image-desc">{{item.desc}}</div>
+                <div class="goods-image-list">
                     <img
                         v-for="value in item.list"
                         :src="value"
@@ -49,7 +50,7 @@ export default {
         goodsInfo() {
             // 监听数据改变后获取所有图片的个数
             this.goodsInfo.detailImage.forEach(item => {
-                this.imagesLength += item.list.length;
+                this.imagesLength += item.list ? item.list.length : 0;
             });
         }
     }
@@ -68,7 +69,7 @@ export default {
     color: #999;
 }
 .detail-msg::after {
-        content: '';
+    content: '';
     position: absolute;
     top: 50%;
     left: 50%;
@@ -107,7 +108,14 @@ export default {
     width: 100%;
     padding: 10px 0;
 }
-.image-list img {
+.goods-image-item {
+    margin-top: 10px;
+}
+.goods-image-desc {
+    padding: 0 15px;
+    font-size: 14px;
+}
+.goods-image-list img {
     display: block;
     width: 100%;
 }

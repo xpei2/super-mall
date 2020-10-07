@@ -21,6 +21,11 @@ export default {
             type: Number,
             default: 1
         },
+        // 是否启用回弹
+        bounce: {
+            type: Boolean,
+            default: true
+        },
         // 是否派发鼠标滚轮
         mouseWheel: {
             type: Boolean,
@@ -64,13 +69,13 @@ export default {
             this.scroll = new BScroll(this.$refs.bsScroll, {
                 probeType: this.probeType,
                 mouseWheel: this.mouseWheel,
-                // bounce: false,
+                bounce: this.bounce,
                 click: this.click
             });
             // 滚动位置监听
             if (this.listenScroll) {
                 this.scroll.on('scroll', pos => {
-                    this.$emit('scroll', pos.y);
+                    this.$emit('inScroll', pos);
                 });
             }
             // 监听上拉事件
@@ -99,8 +104,12 @@ export default {
             // 代理better-scroll的scrollTo方法
             this.scroll && this.scroll.scrollTo(x, y, time);
         },
+        scrollToElement(el, time = 300) {
+            // 代理better-scroll的scrollToElement方法
+            this.scroll && this.scroll.scrollToElement(el, time);
+        },
         getScrollY() {
-            return this.scroll ? this.scroll.y : 0
+            return this.scroll ? this.scroll.y : 0;
         }
     }
 };

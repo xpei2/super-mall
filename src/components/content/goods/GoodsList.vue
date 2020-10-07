@@ -1,6 +1,6 @@
 <template>
     <div class="goods">
-        <goods-list-item v-for="item in goods" :goodsItem="item" :key="item.image" />
+        <goods-list-item v-for="(item, index) in goodsList" :product="item" :key="index" />
     </div>
 </template>
 
@@ -13,16 +13,6 @@ export default {
     },
     components: {
         GoodsListItem
-    },
-    computed: {
-        goods() {
-            return this.goodsList.map(item => {
-                // 处理图片链接
-                let json = item;
-                json.image = item.show.img;
-                return json;
-            });
-        }
     }
 };
 </script>
@@ -33,6 +23,6 @@ export default {
     justify-content: space-around;
     flex-wrap: wrap;
     padding: 0 1.5%;
-    background-color: #eee;
+    background-color: #f7f1f1;
 }
 </style>

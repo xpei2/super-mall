@@ -1,7 +1,7 @@
 <template>
     <div id="home">
         <nav-bar class="home-nav">
-            <template v-slot:nav-center>购物车</template>
+            <template v-slot:nav-center>首页</template>
         </nav-bar>
         <tab-control
             v-show="isTabShow"
@@ -11,13 +11,13 @@
             ref="tabControlFixed"
         />
         <bscroll
-            class="bscroll-style"
-            ref="hmoeScroll"
+            class="home-scroll"
+            ref="scroll"
             :probe-type="3"
             :mouse-wheel="true"
             :pull-up="true"
             :listen-scroll="true"
-            @scroll="contScroll"
+            @inScroll="contScroll"
             @scrollEnd="contScrollEnd"
         >
             <bs-swiper :banners="homeBanners" />
@@ -29,9 +29,9 @@
                 @tabClick="tabClick"
                 ref="tabControl"
             />
-            <goods-list :goodsList="showGoods" />
+            <goods-list :goods-list="goods[curType].list" />
         </bscroll>
-        <back-top @click.native="backClick" v-show="isShowBackTop" />
+        <back-top @click.native="backClick" v-show="isBackTop" />
     </div>
 </template>
 
@@ -42,18 +42,20 @@ import Bscroll from '_com/common/bscroll/Bscroll';
 import BsSwiper from '_com/common/bsswiper/BsSwiper';
 import TabControl from '_com/content/tab-control/TabControl';
 import GoodsList from '_com/content/goods/GoodsList';
-import BackTop from '_com/content/back-top/BackTop';
 
 // 子组件
-// import HomeSwiper from './child-comps/HomeSwiper';
-import RecommendView from './child-comps/RecommendView';
-import FeatureView from './child-comps/FeatureView';
+import RecommendView from './children/RecommendView';
+import FeatureView from './children/FeatureView';
 
 // 获取数据
 import { getHomeMultidata, getHomeGoods } from '_new/home';
 
-// 引入功能函数
-import { debounce } from '_con/utils';
+// 导入混入
+import {
+    goodsListenerMixin,
+    swiperListenerMixin,
+    backTopMixin
+} from '_con/mixin';
 
 export default {
     name: 'Home',
@@ -63,7 +65,6 @@ export default {
         BsSwiper,
         TabControl,
         GoodsList,
-        BackTop,
         RecommendView,
         FeatureView
     },
@@ -79,93 +80,74 @@ export default {
                 new: { page: 0, list: [] },
                 sell: { page: 0, list: [] }
             },
-            currentType: 'pop',
-            // 回到顶部按钮是否显示
-            isShowBackTop: false,
-            // tabCtrol的offsetTop
-            tabOffsetTop: 0,
-            // tabCtrolFixed是否显示
-            isTabShow: false,
-            // 保存better-scroll的滚动位置
-            saveY: 0
+            curType: 'pop',
+            tabOffsetTop: 0
         };
     },
+    mixins: [goodsListenerMixin, swiperListenerMixin, backTopMixin],
     created() {
-        // 1.请求多个数据
+        // 1.请求首页基本数据
         this.getHomeMultidata();
         // 2.请求商品数据
         this.getHomeGoods('pop');
         this.getHomeGoods('new');
         this.getHomeGoods('sell');
     },
-    mounted() {
-        // 1.监听商品图片加载完成
-        const refresh = debounce(this.$refs.hmoeScroll.refresh, 200);
-        this.$bus.$on('itemImageLoad', () => {
-            refresh();
-        });
-        // 监听swiper的图片加载完成，并获取tabControl的offsetTop
-        this.$bus.$on('swiperImgLoad', () => {
+    beforeMount() {
+        // 定义swiper监听获取tabControl距离顶部距离的函数
+        this.swiperImgListener = () => {
             this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
-        });
+        };
     },
+
     activated() {
-        this.$refs.hmoeScroll.refresh();
+        this.$refs.scroll.refresh();
     },
     deactivated() {
-        // 取消detail组件事件总线的监听
-        this.$bus.$off('swiperImgLoad');
+        // 取消swiper组件事件总线的监听
+        this.$bus.$off('swiperImgLoad', this.swiperImgListener);
+
+        // 取消itemImage事件总线的监听
+        this.$bus.$off('itemImageLoad', this.goodstImgListener);
     },
     computed: {
-        showGoods() {
-            return this.goods[this.currentType].list;
+        isTabShow() {
+            // 顶部导航是否显示
+            return this.curPosition > this.tabOffsetTop;
         }
     },
     methods: {
-        /**
-         * 事件监听相关方法
-         */
+        // 监听滚动位置的自定义事件
+        contScroll(position) {
+            // 获取滚动位置
+            this.curPosition = position ? -position.y : 0;
+        },
+
         // 监听tabCtrol的点击事件
         tabClick(index) {
             switch (index) {
                 case 0:
-                    this.currentType = 'pop';
+                    this.curType = 'pop';
                     break;
                 case 1:
-                    this.currentType = 'new';
+                    this.curType = 'new';
                     break;
                 case 2:
-                    this.currentType = 'sell';
+                    this.curType = 'sell';
                     break;
             }
-            this.$refs.tabControlFixed.currentIndex = index;
-            this.$refs.tabControl.currentIndex = index;
-        },
-
-        // 监听跳转顶部的按钮
-        backClick() {
-            // 1. 利用监听组件的原生事件.native 然后取得bsBcroll组件的属性，就是scroll对象，
-            // 2. 用scroll组件内部的封装的scrollTo方法，此处不是better-scroll的原生方法
-            this.$refs.hmoeScroll.scrollTo(0, 0);
-        },
-
-        // 监听滚动位置的自定义事件
-        contScroll(value) {
-            // 判断BackTop是否显示
-            this.isShowBackTop = value < -1000;
-
-            // 判断tabControl是否吸顶
-            this.isTabShow = -value > this.tabOffsetTop;
+            this.$refs.tabControlFixed.curIndex = index;
+            this.$refs.tabControl.curIndex = index;
+            // 解决每次一个类型加载过多数据点击另一个出现空白问题
+            this.$refs.scroll.scrollTo(0, -this.tabOffsetTop, 50)
         },
 
         // 监听滚动结束的上拉加载事件
         contScrollEnd() {
-            this.getHomeGoods(this.currentType);
+            this.getHomeGoods(this.curType);
         },
 
-        /**
-         * 网络请求的方法
-         */
+        // 获取首页基本信息数据
         getHomeMultidata() {
             getHomeMultidata().then(res => {
                 this.homeBanners = res.data.banner.list;
@@ -173,6 +155,8 @@ export default {
                 this.keywords = res.data.keywords.list;
             });
         },
+
+        // 获取首页商品列表数据
         getHomeGoods(type) {
             const page = this.goods[type].page + 1;
             getHomeGoods(type, page).then(res => {
@@ -180,6 +164,19 @@ export default {
                 this.goods[type].page += 1;
             });
         }
+        // 保存页面的滑动位置到缓存中
+        // setSessionStorage() {
+        //     // 在页面加载时读取sessionStorage
+        //     if (sessionStorage.getItem('homePosition')) {
+        //         this.setTop = parseFloat(
+        //             sessionStorage.getItem('homePosition')
+        //         );
+        //     }
+        //     // 在页面刷新时将滑动位置保存到sessionStorage里
+        //     window.addEventListener('beforeunload', () => {
+        //         sessionStorage.setItem('homePosition', -this.curPosition);
+        //     });
+        // }
     }
 };
 </script>
@@ -187,7 +184,7 @@ export default {
 <style scoped>
 #home {
     position: relative;
-    height: 100vh;
+    height: calc(100vh - 49px);
 }
 .home-nav {
     position: relative;
@@ -199,13 +196,12 @@ export default {
 .home-tab-control {
     position: relative;
     z-index: 99;
-    background-color: #fff;
 }
-.bscroll-style {
+.home-scroll {
     position: absolute;
     top: 44px;
     left: 0;
     right: 0;
-    bottom: 49px;
+    bottom: 0;
 }
 </style>

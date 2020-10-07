@@ -1,8 +1,10 @@
 export default {
-  tabBarShow: state => state.tabBarShow,
-//   cartList: state => state.cartList,
-//   // 把getters传给自己,getters默认在第二个参数
-//   cartListLength: (state, getters) => getters.cartList.length,
-//   // 映射请求加载
-//   isLoading: state => state.isLoading
+    // 购物车列表
+    cartList: state => state.cartList,
+    cartCount: (state, getters) => getters.cartList.length,
+    // 收藏列表
+    collectList: state => state.collectList,
+    collectCount: (state, getters) => getters.collectList.length,
+    // 映射请求加载
+    // isLoading: state => state.isLoading
 };

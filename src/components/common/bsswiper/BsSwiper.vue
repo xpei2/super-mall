@@ -2,7 +2,11 @@
     <swiper ref="bsSwiper" :options="swiperOptions">
         <swiper-slide v-for="item in banners" :key="item.image">
             <a :href="item.link && item.link">
-                <img :src="item.image" :alt="item.title && item.title" @load="swiperLoad" />
+                <img
+                    :src="item.image"
+                    :alt="item.title && item.title"
+                    @load="swiperLoad"
+                />
             </a>
         </swiper-slide>
         <div class="swiper-pagination" slot="pagination"></div>
@@ -14,7 +18,14 @@ import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 export default {
     name: 'bsSwiper',
     props: {
-        banners: Array
+        banners: Array,
+        default() {
+            return [
+                {
+                    images: ''
+                }
+            ];
+        }
     },
     data() {
         return {
@@ -26,8 +37,9 @@ export default {
                     bulletActiveClass: 'bs-bullet-active'
                 },
                 autoplay: {
-                    disableOnInteraction: false, //用户操作之后是否禁止自动切换
-                    delay: 3000 //1秒切换一次
+                    //用户操作之后是否禁止自动切换
+                    disableOnInteraction: false,
+                    delay: 3000 //3秒切换一次
                 },
                 loop: true
             },
@@ -39,22 +51,25 @@ export default {
         SwiperSlide
     },
     mounted() {
-        this.$nextTick(()=>{
+        this.$nextTick(() => {
+            // 设置轮播图默认是第一张
             this.swiper.slideToLoop(1);
-        })
+        });
     },
     computed: {
         swiper() {
+            // 获取轮播节点
             return this.$refs.bsSwiper.$swiper;
         }
     },
     methods: {
         swiperLoad() {
+            // 中央事件总线，监听轮播图加载了一张图片
             if (!this.isLoad) {
                 this.$bus.$emit('swiperImgLoad');
                 this.isLoad = true;
             }
-        },
+        }
     }
 };
 </script>

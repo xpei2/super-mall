@@ -3,10 +3,12 @@
         <li
             class="tab-control-item"
             v-for="(item, index) in titles"
-            :class="{'control-active': index===currentIndex}"
+            :class="{ 'control-active': index === curIndex }"
             @click="tabControlActive(index)"
             :key="index"
-        ><span>{{item}}</span></li>
+        >
+            <span>{{ item }}</span>
+        </li>
     </ul>
 </template>
 
@@ -16,18 +18,19 @@ export default {
     props: {
         titles: Array,
         default() {
-            return ['流行', '精选', '新款']
+            return ['流行', '精选', '新款'];
         }
     },
     data() {
         return {
-            currentIndex: 0
+            curIndex: 0
         };
     },
     methods: {
         tabControlActive(index) {
-            this.currentIndex = index;
-            this.$emit('tabClick', index)
+            if (this.curIndex === index) return;
+            this.curIndex = index;
+            this.$emit('tabClick', index);
         }
     }
 };
@@ -37,6 +40,7 @@ export default {
 .tab-control {
     display: flex;
     justify-content: space-around;
+    background-color: #fff;
 }
 .tab-control-item {
     flex: 1;

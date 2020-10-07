@@ -23,6 +23,7 @@ export default {
   display: flex;
   height: 44px;
   box-shadow: 0 1px 3px rgba(100, 100, 100, 0.1);
+  font-size: 16px;
 }
 .nav-left,
 .nav-right,
