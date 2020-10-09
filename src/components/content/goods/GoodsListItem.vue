@@ -50,7 +50,7 @@ export default {
                 .catch(() => {
                     this.$toast({
                         type: 'success',
-                        icon: 'cross',
+                        icon: 'fail',
                         message: '商品已下架！',
                         // 弹框的时候禁止点击
                         forbidClick: true,

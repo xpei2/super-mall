@@ -52,7 +52,7 @@ export default {
     display: flex;
     align-items: center;
     padding: 13px 8px;
-    border-bottom: 8px solid #f8f8f8;
+    border-bottom: 8px solid var(--line-color);
 }
 .info-top {
     display: block;
@@ -87,6 +87,8 @@ export default {
     justify-content: space-between;
     font-size: 14px;
     color: var(--color-text);
+}
+.info-other> span {
     opacity: 0.6;
 }
 .info-service {

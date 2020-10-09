@@ -38,7 +38,7 @@ export default {
 .param-info {
   font-size: 14px;
   padding: 20px 15px;
-  border-bottom: 5px solid #f8f8f8;
+  border-bottom: 5px solid var(--line-color);
 }
 .base-info-msg {
     padding-left: 0;

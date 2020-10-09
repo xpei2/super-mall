@@ -62,7 +62,7 @@ export default {
         TabControl,
         GoodsList,
         CateSlideBar,
-        SubCategory
+        SubCategory,
     },
     data() {
         return {
@@ -70,7 +70,7 @@ export default {
             subCategoryList: [],
             categoryDetailList: [],
             titles: ['流行', '新款', '精选'],
-            slideMiniWallkey: ''
+            slideMiniWallkey: '',
         };
     },
     mixins: [goodsListenerMixin],
@@ -99,6 +99,10 @@ export default {
                 this.getCategoryDetail(obj.miniWallkey, 'pop');
                 // 设置当前商品的推荐列表id
                 this.slideMiniWallkey = obj.miniWallkey;
+                this.$nextTick(() => {
+                    // 点击滚动到顶部
+                    this.$refs.scroll.scrollTo(0, 0, 50);
+                });
             }
         },
         // tabControl点击事件
@@ -108,7 +112,7 @@ export default {
         },
         // 获取分类列表数据
         getCategory() {
-            getCategory().then(res => {
+            getCategory().then((res) => {
                 this.CategoryList = res.data.category.list;
                 // 设置默认商品推荐列表id为第一个分类的id
                 this.slideMiniWallkey = res.data.category.list[0].miniWallkey;
@@ -121,17 +125,17 @@ export default {
         },
         // 获取子分类列表数据及其推荐商品列表
         getSubCategory(key) {
-            getSubCategory(key).then(res => {
+            getSubCategory(key).then((res) => {
                 this.subCategoryList = res.data.list;
             });
         },
         // 获取分类推荐商品的详情
         getCategoryDetail(key, type) {
-            getCategoryDetail(key, type).then(res => {
+            getCategoryDetail(key, type).then((res) => {
                 this.categoryDetailList = res;
             });
-        }
-    }
+        },
+    },
 };
 </script>
 

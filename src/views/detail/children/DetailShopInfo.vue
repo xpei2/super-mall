@@ -1,34 +1,44 @@
 <template>
     <div class="shop-info">
-        <div class="shop-top" @click="enterShop">
+        <div class="shop-top" @click="notClick">
             <img :src="shopInfo.logo" alt />
-            <span class="shop-name">{{shopInfo.name}}</span>
+            <span class="shop-name">{{ shopInfo.name }}</span>
         </div>
         <div class="shop-middle">
             <div class="shop-middle-item shop-middle-lf">
                 <div class="info-sells">
-                    <div class="sells-count">{{shopInfo.sells | sellCountFilter}}</div>
+                    <div class="sells-count">
+                        {{ shopInfo.sells | sellCountFilter }}
+                    </div>
                     <div class="sells-text">总销量</div>
                 </div>
                 <div class="info-goods">
-                    <div class="goods-count">{{shopInfo.goodsCount}}</div>
+                    <div class="goods-count">{{ shopInfo.goodsCount }}</div>
                     <div class="goods-text">全部宝贝</div>
                 </div>
             </div>
             <div class="shop-middle-item shop-middle-rh">
                 <table>
                     <tr v-for="(item, index) in shopInfo.score" :key="index">
-                        <td>{{item.name}}</td>
-                        <td class="score" :class="{'score-better': item.isBetter}">{{item.score}}</td>
-                        <td class="better" :class="{'better-more': item.isBetter}">
-                            <span>{{item.isBetter ? '高': '低'}}</span>
+                        <td>{{ item.name }}</td>
+                        <td
+                            class="score"
+                            :class="{ 'score-better': item.isBetter }"
+                        >
+                            {{ item.score }}
+                        </td>
+                        <td
+                            class="better"
+                            :class="{ 'better-more': item.isBetter }"
+                        >
+                            <span>{{ item.isBetter ? '高' : '低' }}</span>
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
         <div class="shop-bottom">
-            <div class="enter-shop" @click="enterShop">进店逛逛</div>
+            <div class="enter-shop" @click="notClick">进店逛逛</div>
         </div>
     </div>
 </template>
@@ -41,19 +51,26 @@ export default {
             type: Object,
             default() {
                 return {};
-            }
-        }
+            },
+        },
     },
     filters: {
         sellCountFilter(value) {
             return value < 10000 ? value : (value / 10000).toFixed(1) + '万';
-        }
+        },
     },
     methods: {
-        enterShop() {
-            this.$toast("暂无法进入店铺");
-        }
-    }
+        notClick() {
+            this.$toast({
+                type: 'success',
+                message: '暂未开通\n此功能',
+                icon: 'fail',
+                // 弹框的时候禁止点击
+                forbidClick: true,
+                duration: 1500,
+            });
+        },
+    },
 };
 </script>
 
@@ -137,5 +154,4 @@ export default {
     border-radius: 10px;
     background-color: #f2f5f8;
 }
-
 </style>
