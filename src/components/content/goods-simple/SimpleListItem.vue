@@ -1,34 +1,46 @@
 <template>
     <div class="cart-item">
-        <van-checkbox v-model="product.checked" :checked-color="checkedColor"></van-checkbox>
+        <van-checkbox
+            v-show="isCheckbox"
+            v-model="product.checked"
+            :checked-color="checkedColor"
+        ></van-checkbox>
         <van-card
             :num="product.count"
             :price="product.price"
-            :desc="product.desc"
+            :desc="product.collect || product.desc"
             :title="product.title"
             :thumb="product.image"
-        />
+        >
+            <template v-if="isFootBtn" #footer>
+                <van-button size="mini" plain round color="#c8c9cc" to="category">{{btnText}}</van-button>
+            </template>
+        </van-card>
     </div>
 </template>
 
 <script>
-import { Checkbox, Card } from 'vant';
+import { Checkbox, Card, Button } from 'vant';
 
 export default {
-    name: 'CartListItem',
+    name: 'SimpleListItem',
     props: {
         product: {
             type: Object,
             default() {
-                return {}
-            }
+                return {};
+            },
         },
-        checkedColor: String
+        isCheckbox: Boolean,
+        checkedColor: String,
+        isFootBtn: Boolean,
+        btnText: String
     },
     components: {
         [Checkbox.name]: Checkbox,
-        [Card.name]: Card
-    }
+        [Card.name]: Card,
+        [Button.name]: Button
+    },
 };
 </script>
 
@@ -62,5 +74,10 @@ export default {
 }
 .van-card__price {
     color: #ff4500;
+}
+.van-card__footer {
+        position: absolute;
+    right: 7px;
+    bottom: 7px;
 }
 </style>

@@ -26,7 +26,7 @@ import { SubmitBar, Checkbox } from 'vant';
 import { mapGetters } from 'vuex';
 
 export default {
-    name: 'CartBottomBar',
+    name: 'CollectBottomBar',
     props: {
         checkedColor: String,
         // 用传过来的父组件的计算属性，如果将checkedAllClick电机事件绑定到van-checkbox上面，会发生直接修改props值的错误
@@ -85,7 +85,6 @@ export default {
 
 <style scoped>
 .van-submit-bar {
-    bottom: 49px;
     border-top: 1px solid rgb(204, 203, 203);
 }
 .van-submit-bar__text {

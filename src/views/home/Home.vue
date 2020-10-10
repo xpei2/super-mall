@@ -1,6 +1,6 @@
 <template>
     <div id="home">
-        <nav-bar class="home-nav">
+        <nav-bar>
             <template v-slot:nav-center>首页</template>
         </nav-bar>
         <tab-control
@@ -186,13 +186,7 @@ export default {
     position: relative;
     height: calc(100vh - 49px);
 }
-.home-nav {
-    position: relative;
-    z-index: 9;
-    width: 100%;
-    background-color: var(--color-tint);
-    color: #fff;
-}
+
 .home-tab-control {
     position: relative;
     z-index: 99;

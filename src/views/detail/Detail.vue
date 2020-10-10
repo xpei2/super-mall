@@ -1,7 +1,6 @@
 <template>
     <div id="detail">
         <detail-nav-bar
-            class="detail-nav"
             @titleClick="titleClick"
             ref="detailNavbar"
         />
@@ -71,18 +70,18 @@ import {
     getRecommend,
     BaseInfo,
     ShopInfo,
-    ParamInfo
+    ParamInfo,
 } from '_new/detail';
 
 // 导入混入
 import {
     goodsListenerMixin,
     swiperListenerMixin,
-    backTopMixin
+    backTopMixin,
 } from '_con/mixin';
 
 // 导入Vuex
-import { mapActions } from 'vuex'
+import { mapActions } from 'vuex';
 
 export default {
     name: 'Detail',
@@ -96,7 +95,7 @@ export default {
         DetailGoodsInfo,
         DetailParamInfo,
         DetailRateInfo,
-        DetailBottomBar
+        DetailBottomBar,
     },
     data() {
         return {
@@ -109,7 +108,7 @@ export default {
             rateInfo: {},
             recommendInfo: [],
             setScrollTop: [],
-            navIndex: 0
+            navIndex: 0,
         };
     },
     mixins: [goodsListenerMixin, swiperListenerMixin, backTopMixin],
@@ -156,9 +155,11 @@ export default {
         getScrollTop() {
             // 获取锚点举例顶部的距离
             this.setScrollTop = []; //每次获取之前将上次获取的清空
-            Array.from(document.querySelectorAll('.set-scroll')).forEach(el => {
-                this.setScrollTop.push(el.offsetTop);
-            });
+            Array.from(document.querySelectorAll('.set-scroll')).forEach(
+                (el) => {
+                    this.setScrollTop.push(el.offsetTop);
+                }
+            );
             // 给获取到的位置数组添加一个最大值，便于两个值之间的判断
             this.setScrollTop.push(Number.MAX_VALUE);
         },
@@ -220,49 +221,63 @@ export default {
                 title: this.baseInfo.title,
                 desc: this.baseInfo.desc,
                 price: this.baseInfo.realPrice,
-                id: this.goodsId
+                id: this.goodsId,
             };
             // 引用Vuex的actions里面的方法
             this.setCartGoods(cartGoods)
-                .then(res => {
+                .then((res) => {
                     this.$toast({
                         type: res.type,
                         position: res.position,
                         message: res.message,
                         // 弹框的时候禁止点击
                         forbidClick: true,
-                        duration: 1500
+                        duration: 1500,
                     });
                 })
-                .catch(err => err);
+                .catch((err) => err);
         },
 
         // 监听收藏列表事件，并提交到状态管理处理
         collectClick() {
+            // 获取商品被收藏的数量
+            let collectCount = parseInt(
+                this.baseInfo.columns[1].match(/\d+/)[0]
+            );
             // 获取当前收藏商品数据
             const collectGoods = {
-                id: this.goodsId
+                id: this.goodsId,
+                image: this.detailBanners[0].image,
+                desc: this.baseInfo.desc,
+                price: this.baseInfo.realPrice,
+                title: this.baseInfo.title,
+                collect:
+                    collectCount >= 10000
+                        ? `${Math.floor(collectCount / 10000)}万+人收藏`
+                        : collectCount >= 1000 && collectCount < 10000
+                        ? `${Math.floor(collectCount / 1000)}000+人收藏`
+                        : `${collectCount}人收藏`,
             };
             // 引用Vuex的actions里面的方法
             this.setCollectGoods(collectGoods)
-                .then(res => {
+                .then((res) => {
                     this.$toast({
                         type: 'success',
                         icon: res.icon,
                         message: res.message,
                         // 弹框的时候禁止点击
                         forbidClick: true,
-                        duration: 1500
+                        duration: 1500,
                     });
                 })
-                .catch(err => err);
+                .catch((err) => err);
         },
         // 请求详情数据
         getDetailGoods() {
-            getDetailGoods(this.goodsId).then(res => {
+            getDetailGoods(this.goodsId).then((res) => {
                 const data = res.result;
                 // 获取轮播数据，并处理
-                this.detailBanners = data.itemInfo.topImages.map(value => {
+                this.detailBanners = data.itemInfo.topImages.map((value) => {
                     let json = {};
                     json.image = value;
                     return json;
@@ -293,20 +308,17 @@ export default {
 
         // 获取推荐数据
         getRecommend() {
-            getRecommend().then(res => {
+            getRecommend().then((res) => {
                 this.recommendInfo = res.data.list;
             });
-        }
-    }
+        },
+    },
 };
 </script>
 
 <style scoped>
 #detail {
     height: 100vh;
-    background-color: #fff;
-}
-.detail-nav {
     background-color: #fff;
 }
 .detail-scroll {

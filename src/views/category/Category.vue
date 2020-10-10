@@ -1,6 +1,6 @@
 <template>
     <div id="category">
-        <nav-bar class="category-bar">
+        <nav-bar>
             <template v-slot:nav-center>商品分类</template>
         </nav-bar>
         <div class="category-cont slide-bar">
@@ -144,11 +144,6 @@ export default {
     display: flex;
     flex-wrap: wrap;
     height: calc(100vh - 49px);
-}
-.category-bar {
-    width: 100%;
-    background-color: var(--color-tint);
-    color: #fff;
 }
 .category-cont {
     flex-shrink: 0;

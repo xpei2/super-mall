@@ -62,9 +62,8 @@ export default {
     methods: {
         notClick() {
             this.$toast({
-                type: 'success',
+                type: 'fail',
                 message: '暂未开通\n此功能',
-                icon: 'fail',
                 // 弹框的时候禁止点击
                 forbidClick: true,
                 duration: 1500,

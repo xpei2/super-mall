@@ -1,7 +1,7 @@
 <template>
     <div id="profile">
-        <nav-bar class="profile-bar">
-            <template v-slot:nav-center>商品分类</template>
+        <nav-bar>
+            <template v-slot:nav-center>流浪狗商城</template>
         </nav-bar>
         <profile-info />
         <finance>
@@ -34,10 +34,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.profile-bar {
-    width: 100%;
-    background-color: var(--color-tint);
-    color: #fff;
-}
-</style>

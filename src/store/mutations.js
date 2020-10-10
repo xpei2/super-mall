@@ -4,9 +4,11 @@ import {
     SET_LOCAL_CART,
     ADD_CART_COUNTER,
     ADD_CART,
+    CLEAR_CART,
     SET_LOCAL_COLLECT,
     ADD_COLLECT,
-    REMOVE_COLLECT
+    REMOVE_COLLECT,
+    CLEAR_COLLECT
 } from './types'
 export default {
     // 设置tabBar显示和隐藏
@@ -35,7 +37,10 @@ export default {
         //储存缓存
         localStorage.setItem('cartList', JSON.stringify(state.cartList))
     },
-
+    // 删除购物车列表
+    [CLEAR_CART](state) {
+        console.log('删除购物车');
+    },
     // 设置收藏列表的本地缓存数据
     [SET_LOCAL_COLLECT](state, data) {
         state.collectList = data
@@ -54,5 +59,9 @@ export default {
         })
         //储存缓存
         localStorage.setItem('collectList', JSON.stringify(state.collectList))
+    },
+    // 删除收藏列表
+    [CLEAR_COLLECT](state) {
+        console.log('删除收藏');
     }
 }
