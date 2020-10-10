@@ -44,7 +44,7 @@ import CartBottomBar from './children/CartBottomBar';
 import { mapGetters, mapMutations } from 'vuex';
 
 // 导入混入
-import { simpleManage } from '_con/mixin';
+import { simpleManageMixin } from '_con/mixin';
 export default {
     name: 'Cart',
     components: {
@@ -65,7 +65,7 @@ export default {
             return this.cartCount === 0;
         },
     },
-    mixins: [simpleManage],
+    mixins: [simpleManageMixin],
     methods: {
         ...mapMutations(['setLocalCart']),
     },
