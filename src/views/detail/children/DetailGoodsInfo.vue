@@ -1,15 +1,21 @@
 <template>
     <div v-if="Object.keys(goodsInfo).length !== 0">
-        <div class="detail-msg"><span>详情</span></div>
+        <msg-title title="详情" />
         <div class="goods-desc clear-fix">
             <span class="desc-border desc-border-t"></span>
-            <p class="desc-txt">{{goodsInfo.desc}}</p>
+            <p class="desc-txt">{{ goodsInfo.desc }}</p>
             <span class="desc-border desc-border-b"></span>
         </div>
         <ul class="goods-image">
-            <li class="goods-image-item" v-for="item in goodsInfo.detailImage" :key="item.key">
-                <h3 class="base-info-msg"><span>{{item.key}}</span></h3>
-                <div class="goods-image-desc">{{item.desc}}</div>
+            <li
+                class="goods-image-item"
+                v-for="item in goodsInfo.detailImage"
+                :key="item.key"
+            >
+                <h3 class="base-info-msg">
+                    <span>{{ item.key }}</span>
+                </h3>
+                <div class="goods-image-desc">{{ item.desc }}</div>
                 <div class="goods-image-list">
                     <img
                         v-for="value in item.list"
@@ -25,6 +31,8 @@
 </template>
 
 <script>
+import MsgTitle from '_com/content/msg-title/MsgTitle';
+
 export default {
     name: 'DetailGoodsInfo',
     props: {
@@ -32,33 +40,36 @@ export default {
             type: Object,
             default() {
                 return {};
-            }
-        }
+            },
+        },
     },
     data() {
         return {
             counter: 0,
-            imagesLength: 0
+            imagesLength: 0,
         };
+    },
+    components: {
+        MsgTitle,
     },
     methods: {
         goodsImgLoad() {
             ++this.counter === this.imagesLength && this.$emit('imgLoad');
-        }
+        },
     },
     watch: {
         goodsInfo() {
             // 监听数据改变后获取所有图片的个数
-            this.goodsInfo.detailImage.forEach(item => {
+            this.goodsInfo.detailImage.forEach((item) => {
                 this.imagesLength += item.list ? item.list.length : 0;
             });
-        }
-    }
+        },
+    },
 };
 </script>
 
 <style scoped>
-.detail-msg {
+.base-msg-title {
     position: relative;
     z-index: 1;
     display: flex;
@@ -68,7 +79,7 @@ export default {
     background-color: #f2f2f2;
     color: #999;
 }
-.detail-msg::after {
+.base-msg-title::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -79,7 +90,7 @@ export default {
     margin-left: -60px;
     background-color: #666;
 }
-.detail-msg span {
+.base-msg-title span {
     position: relative;
     padding: 0 10px;
     background-color: #f2f2f2;
@@ -89,7 +100,7 @@ export default {
     box-sizing: border-box;
 }
 .desc-border {
-   display: block;
+    display: block;
     height: 5px;
     width: 63px;
     border-width: 1px 4px;

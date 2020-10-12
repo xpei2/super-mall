@@ -8,7 +8,7 @@
             <template v-slot:nav-center>我的收藏</template>
             <template v-slot:nav-right>
                 <span
-                v-if="!collectEmpty"
+                    v-if="!collectEmpty"
                     class="simple-manage-btn"
                     @click="simpleManage"
                     :style="{ color: simpleManageStyle.color }"
@@ -22,17 +22,18 @@
             empty-msg="您还没有收藏宝贝哦，去逛逛吧~"
         />
         <div v-else class="collect-container">
-            <!-- 购物车列表 -->
+            <!-- 收藏列表 -->
             <simple-list
                 class="collect-list"
                 checked-color="#ff4500"
                 :simple-list="collectList"
+                :recommend-info="recommendInfo"
                 :is-checkbox="isCheckbox"
                 btn-text="找相似"
                 is-foot-btn
             />
             <!-- 底部汇总 -->
-            <collect-bottom-bar v-show="false" checked-color="#ff4500" />
+            <collect-bottom-bar v-show="isShowBottom" checked-color="#ff4500" />
         </div>
     </div>
 </template>
@@ -46,6 +47,9 @@ import { Icon } from 'vant';
 // 子组件
 import CollectBottomBar from './children/CollectBottomBar';
 
+// 获取推荐数据
+import { getRecommend } from '_new/recommend';
+
 // 状态管理
 import { mapGetters, mapMutations } from 'vuex';
 
@@ -53,6 +57,11 @@ import { mapGetters, mapMutations } from 'vuex';
 import { simpleManageMixin, backBtnMixin } from '_con/mixin';
 export default {
     name: 'Collect',
+    data() {
+        return {
+            recommendInfo: []
+        };
+    },
     components: {
         NavBar,
         SimpleEmpty,
@@ -69,10 +78,20 @@ export default {
         collectEmpty() {
             return this.collectCount === 0;
         },
+
+        // 判断是否显示底部汇总
+        isShowBottom() {
+            return this.isCheckbox
+        }
     },
     methods: {
         // 获取状态管理的设置收藏缓存方法
         ...mapMutations(['setLocalCollect']),
+        getRecommend() {
+            getRecommend().then((res) => {
+                this.recommendInfo = res.data.list;
+            });
+        },
     },
     beforeCreate() {
         // 进入详情页前隐藏tabbar
@@ -84,6 +103,8 @@ export default {
         if (collect) {
             this.setLocalCollect(collect);
         }
+        // 获取推荐数据
+        this.getRecommend();
     },
     beforeRouteLeave(to, from, next) {
         // 路由离开的时候恢复tabBar

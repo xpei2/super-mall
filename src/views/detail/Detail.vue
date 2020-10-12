@@ -24,21 +24,18 @@
                 @imgLoad="goodsImgLoad"
             />
             <detail-param-info
-                ref="setParams"
                 class="set-scroll"
                 :params-info="paramsInfo"
             />
             <detail-rate-info
-                ref="setRate"
                 class="set-scroll"
                 :rate-info="rateInfo"
             />
             <goods-list
-                ref="setRecommend"
                 class="detail-goods set-scroll"
                 :goods-list="recommendInfo"
             />
-            <p class="detail-msg">没有更多了</p>
+            <p class="recommend-msg">没有更多了</p>
         </bscroll>
         <back-top @click.native="backClick" v-show="isBackTop" />
         <detail-bottom-bar
@@ -64,14 +61,17 @@ import DetailParamInfo from './children/DetailParamInfo';
 import DetailRateInfo from './children/DetailRateInfo';
 import DetailBottomBar from './children/DetailBottomBar';
 
-// 获取数据
+// 获取详情数据
 import {
     getDetailGoods,
-    getRecommend,
     BaseInfo,
     ShopInfo,
     ParamInfo,
 } from '_new/detail';
+// 获取推荐数据
+import {
+    getRecommend,
+} from '_new/recommend';
 
 // 导入混入
 import {
@@ -331,7 +331,7 @@ export default {
     background: none;
 }
 
-.detail-msg {
+.recommend-msg {
     font-size: 14px;
     line-height: 40px;
     text-align: center;

@@ -4,7 +4,9 @@
         <nav-bar :class="{ 'cart-empty-nav': cartEmpty }">
             <template v-slot:nav-left v-if="cartEmpty">
                 <strong> 购物车({{ cartCount }}) </strong>
-                <div class="cart-empty-img"><img src="~_ats/img/cart/cart-empty.jpg" alt=""></div>
+                <div class="cart-empty-img">
+                    <img src="~_ats/img/cart/cart-empty.jpg" alt="" />
+                </div>
             </template>
             <template v-slot:nav-center v-else
                 >购物车({{ cartCount }})</template
@@ -29,6 +31,7 @@
                 class="cart-list"
                 checked-color="#ff4500"
                 :simple-list="cartList"
+                :recommend-info="recommendInfo"
             />
             <!-- 底部汇总 -->
             <cart-bottom-bar
@@ -47,6 +50,9 @@ import { SimpleEmpty, SimpleList } from '_com/content/goods-simple/index';
 // 子组件
 import CartBottomBar from './children/CartBottomBar';
 
+// 获取推荐数据
+import { getRecommend } from '_new/recommend';
+
 // 导入Vuex
 import { mapGetters, mapMutations } from 'vuex';
 
@@ -54,6 +60,11 @@ import { mapGetters, mapMutations } from 'vuex';
 import { simpleManageMixin } from '_con/mixin';
 export default {
     name: 'Cart',
+    data() {
+        return {
+            recommendInfo: []
+        }
+    },
     components: {
         NavBar,
         SimpleEmpty,
@@ -75,6 +86,11 @@ export default {
     mixins: [simpleManageMixin],
     methods: {
         ...mapMutations(['setLocalCart']),
+        getRecommend() {
+            getRecommend().then((res) => {
+                this.recommendInfo = res.data.list;
+            });
+        },
     },
     created() {
         // 每次刷新页面获取本地存储购物车数据
@@ -82,6 +98,8 @@ export default {
         if (cart) {
             this.setLocalCart(cart);
         }
+        // 获取推荐数据
+        this.getRecommend();
     },
 };
 </script>

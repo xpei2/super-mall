@@ -1,5 +1,5 @@
 <template>
-    <div class="cart-item">
+    <div class="simple-item">
         <van-checkbox
             v-show="isCheckbox"
             v-model="product.checked"
@@ -45,10 +45,12 @@ export default {
 </script>
 
 <style scoped>
-.cart-item {
+.simple-item {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid rgb(204, 203, 203);
+}
+.simple-item:nth-of-type(n+2) {
+    border-top: 1px solid rgb(204, 203, 203);
 }
 .van-checkbox {
     flex-shrink: 0;

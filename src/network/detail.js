@@ -12,13 +12,6 @@ export function getDetailGoods(iid) {
   })
 }
 
-export function getRecommend() {
-  // 获取推荐数据
-  return request({
-    url: '/recommend'
-  })
-}
-
 export class BaseInfo {
   constructor(itemInfo, columns, services) {
     this.title = itemInfo.title ? itemInfo.title: '';

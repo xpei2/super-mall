@@ -11,8 +11,8 @@ import 'vant/lib/index.css';
 
 Vue.config.productionTip = false;
 // 清空购物车和收藏的缓存，做了删除功能后就不需要了
-localStorage.removeItem('cartList');
-localStorage.removeItem('collectList');
+// localStorage.removeItem('cartList');
+// localStorage.removeItem('collectList');
 
 // 使用懒加载
 Vue.use(Lazyload, {
