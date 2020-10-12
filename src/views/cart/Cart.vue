@@ -1,10 +1,17 @@
 <template>
     <div id="cart">
         <!-- 导航 -->
-        <nav-bar :class="{ 'cart-empty-nav': cartRmpty }">
-            <template v-slot:nav-center>购物车({{ cartCount }})</template>
+        <nav-bar :class="{ 'cart-empty-nav': cartEmpty }">
+            <template v-slot:nav-left v-if="cartEmpty">
+                <strong> 购物车({{ cartCount }}) </strong>
+                <div class="cart-empty-img"><img src="~_ats/img/cart/cart-empty.jpg" alt=""></div>
+            </template>
+            <template v-slot:nav-center v-else
+                >购物车({{ cartCount }})</template
+            >
             <template v-slot:nav-right>
                 <span
+                    v-if="!cartEmpty"
                     @click="simpleManage"
                     :style="{ color: simpleManageStyle.color }"
                     >{{ simpleManageStyle.text }}</span
@@ -12,7 +19,7 @@
             </template>
         </nav-bar>
         <simple-empty
-            v-if="cartRmpty"
+            v-if="cartEmpty"
             empty-title="购物车竟然是空的"
             empty-msg="再忙，也要记得买点什么犒劳自己吧~"
         />
@@ -61,7 +68,7 @@ export default {
                 : !this.cartList.find((item) => !item.checked);
         },
         // 判断购物车是否为空，是则显示提示内容，否则显示购物车内容
-        cartRmpty() {
+        cartEmpty() {
             return this.cartCount === 0;
         },
     },
@@ -70,7 +77,6 @@ export default {
         ...mapMutations(['setLocalCart']),
     },
     created() {
-        // localStorage.clear();
         // 每次刷新页面获取本地存储购物车数据
         let cart = JSON.parse(localStorage.getItem('cartList'));
         if (cart) {
@@ -86,6 +92,27 @@ export default {
 }
 .cart-empty-nav {
     height: 160px;
+}
+.cart-empty-nav >>> .nav-left {
+    width: 100%;
+    display: block;
+    padding: 10px;
+}
+.cart-empty-nav >>> .cart-empty-img {
+    margin-top: 25px;
+    height: 80px;
+    overflow: hidden;
+}
+.cart-empty-nav >>> .cart-empty-img img {
+    display: block;
+    width: 100%;
+}
+.cart-empty-nav >>> .nav-left strong {
+    font-size: 1.2em;
+}
+.cart-empty-nav >>> .nav-center,
+.cart-empty-nav >>> .nav-right {
+    display: none;
 }
 .cart-container {
     height: calc(100% - 44px);

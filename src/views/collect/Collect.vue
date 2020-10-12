@@ -8,6 +8,7 @@
             <template v-slot:nav-center>我的收藏</template>
             <template v-slot:nav-right>
                 <span
+                v-if="!collectEmpty"
                     class="simple-manage-btn"
                     @click="simpleManage"
                     :style="{ color: simpleManageStyle.color }"
@@ -16,7 +17,7 @@
             </template>
         </nav-bar>
         <simple-empty
-            v-if="collectRmpty"
+            v-if="collectEmpty"
             empty-title="暂无收藏！"
             empty-msg="您还没有收藏宝贝哦，去逛逛吧~"
         />
@@ -65,7 +66,7 @@ export default {
         ...mapGetters(['collectList', 'collectCount']),
 
         // 判断收藏是否为空，是则显示提示内容，否则显示收藏内容
-        collectRmpty() {
+        collectEmpty() {
             return this.collectCount === 0;
         },
     },

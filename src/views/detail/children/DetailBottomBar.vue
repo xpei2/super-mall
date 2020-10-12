@@ -107,7 +107,7 @@ export default {
     border-top: 1px solid #e6e6e6;
     box-shadow: 0 -1px 1px #efefef;
 }
-/deep/ .van-info {
+.detail-bottom-bar >>> .van-info {
     top: 2px;
 }
 </style>

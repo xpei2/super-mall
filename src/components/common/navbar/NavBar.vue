@@ -38,6 +38,7 @@ export default {
 
 <style scoped>
 .nav-bar {
+    position: relative;
     display: flex;
     width: 100%;
     height: 44px;

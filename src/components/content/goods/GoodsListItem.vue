@@ -7,7 +7,7 @@
             <p class="goods-title">{{ product.title }}</p>
             <p class="good-price-box">
                 <span class="goods-price">{{ product.price | newPrice }}</span>
-                <span class="goods-collect">{{ product.cfav }}</span>
+                <van-icon name="star-o" />{{ product.cfav }}
             </p>
         </a>
     </div>
@@ -15,23 +15,27 @@
 
 <script>
 import { getDetailGoods } from '_new/detail';
+import { Icon } from 'vant';
 
 export default {
     name: 'GoodListItem',
+    components: {
+        [Icon.name]: Icon,
+    },
     props: {
         product: {
             type: Object,
             default() {
                 return {};
-            }
-        }
+            },
+        },
     },
     computed: {
         goodsImage() {
             return (
                 this.product.img || this.product.image || this.product.show.img
             );
-        }
+        },
     },
     methods: {
         imageLoad() {
@@ -54,16 +58,16 @@ export default {
                         message: '商品已下架！',
                         // 弹框的时候禁止点击
                         forbidClick: true,
-                        duration: 1500
+                        duration: 1500,
                     });
                 });
-        }
+        },
     },
     filters: {
         newPrice(price) {
             return `￥${price}`;
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -114,20 +118,10 @@ export default {
     color: var(--color-high-text);
 }
 
-.goods-collect {
-    position: relative;
-    padding-left: 16px;
+.van-icon {
+    vertical-align: text-top;
 }
 
-.goods-collect::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 14px;
-    height: 14px;
-    background: url('~_ats/img/common/collect.svg') 0 0/14px 14px;
-}
 @media screen and (max-width: 480px) {
     .goods-img {
         height: 200px;

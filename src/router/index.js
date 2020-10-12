@@ -25,10 +25,10 @@ import Collect from '_vie/collect/Collect'
 
 const routes = [{
         path: '*',
-        redirect: '/home'
+        redirect: '/'
     },
     {
-        path: '/home',
+        path: '/',
         name: 'home',
         component: Home
     },

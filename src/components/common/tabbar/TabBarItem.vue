@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     isActive() {
-      return this.$route.path.includes(this.path);
+      return this.$route.path === this.path;
     },
     activeStyle() {
       return this.isActive ? { color: this.activeColor } : {};
