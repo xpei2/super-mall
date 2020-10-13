@@ -33,7 +33,18 @@
                 is-foot-btn
             />
             <!-- 底部汇总 -->
-            <collect-bottom-bar v-show="isShowBottom" checked-color="#ff4500" />
+            <simple-bottom-bar
+                class="collect-submit-bar"
+                v-show="isCheckbox"
+                checked-color="#ff4500"
+                :is-checkbox="isCheckbox"
+            >
+                <template v-slot:manage-btn>
+                    <button @click="collectMore">收藏更多</button>
+                    <button @click="addCart">加入购物车</button>
+                    <van-icon name="delete" class="collect-remove"  @click="removeCollect"/>
+                </template>
+            </simple-bottom-bar>
         </div>
     </div>
 </template>
@@ -42,7 +53,11 @@
 <script>
 // 公共组件
 import NavBar from '_com/common/navbar/NavBar';
-import { SimpleEmpty, SimpleList } from '_com/content/goods-simple/index';
+import {
+    SimpleEmpty,
+    SimpleList,
+    SimpleBottomBar,
+} from '_com/content/goods-simple/index';
 import { Icon } from 'vant';
 // 子组件
 import CollectBottomBar from './children/CollectBottomBar';
@@ -59,15 +74,15 @@ export default {
     name: 'Collect',
     data() {
         return {
-            recommendInfo: []
+            recommendInfo: [],
         };
     },
     components: {
         NavBar,
         SimpleEmpty,
         SimpleList,
+        SimpleBottomBar,
         [Icon.name]: Icon,
-        CollectBottomBar,
     },
     mixins: [simpleManageMixin, backBtnMixin],
     computed: {
@@ -78,15 +93,36 @@ export default {
         collectEmpty() {
             return this.collectCount === 0;
         },
-
-        // 判断是否显示底部汇总
-        isShowBottom() {
-            return this.isCheckbox
-        }
     },
     methods: {
         // 获取状态管理的设置收藏缓存方法
         ...mapMutations(['setLocalCollect']),
+
+        // 收藏更多按钮
+        collectMore() {
+            this.$router.push('/category');
+        },
+        // 添加购物车
+        addCart() {
+            this.$toast({
+                type: 'fail',
+                message: '暂未开通\n此功能',
+                // 弹框的时候禁止点击
+                forbidClick: true,
+                duration: 1500,
+            });
+        },
+        // 删除购物车
+        removeCollect() {
+            this.$toast({
+                type: 'fail',
+                message: '暂未开通\n此功能',
+                // 弹框的时候禁止点击
+                forbidClick: true,
+                duration: 1500,
+            });
+        },
+        // 获取推荐列表数据
         getRecommend() {
             getRecommend().then((res) => {
                 this.recommendInfo = res.data.list;
@@ -130,5 +166,13 @@ export default {
     display: grid;
     place-items: center;
     font-size: 22px;
+}
+.collect-remove {
+    width: auto;
+    height: auto;
+    margin-left: 10px;
+}
+.van-icon-delete::before {
+    transform: scaleX(.8);
 }
 </style>

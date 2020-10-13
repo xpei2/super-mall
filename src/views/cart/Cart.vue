@@ -34,10 +34,20 @@
                 :recommend-info="recommendInfo"
             />
             <!-- 底部汇总 -->
-            <cart-bottom-bar
+            <simple-bottom-bar
+                class="cart-submit-bar"
                 checked-color="#ff4500"
+                :is-checkbox="isCheckbox"
                 :checked-all="checkedAll"
-            />
+            >
+                <template v-slot:manage-btn>
+                    <button class="cart-clear-btn" @click="clearCart">
+                        <img src="~_ats/img/common/clear.png" alt="" />清理
+                    </button>
+                    <button @click="addCollect">加入收藏夹</button>
+                    <button @click="removeCart">删除</button>
+                </template>
+            </simple-bottom-bar>
         </div>
     </div>
 </template>
@@ -45,10 +55,14 @@
 <script>
 // 公共组件
 import NavBar from '_com/common/navbar/NavBar';
-import { SimpleEmpty, SimpleList } from '_com/content/goods-simple/index';
+import {
+    SimpleEmpty,
+    SimpleList,
+    SimpleBottomBar,
+} from '_com/content/goods-simple/index';
 
 // 子组件
-import CartBottomBar from './children/CartBottomBar';
+// import CartBottomBar from './children/CartBottomBar';
 
 // 获取推荐数据
 import { getRecommend } from '_new/recommend';
@@ -62,14 +76,14 @@ export default {
     name: 'Cart',
     data() {
         return {
-            recommendInfo: []
-        }
+            recommendInfo: [],
+        };
     },
     components: {
         NavBar,
         SimpleEmpty,
         SimpleList,
-        CartBottomBar,
+        SimpleBottomBar,
     },
     computed: {
         ...mapGetters(['cartCount', 'cartList']),
@@ -86,6 +100,37 @@ export default {
     mixins: [simpleManageMixin],
     methods: {
         ...mapMutations(['setLocalCart']),
+        // 清理购物车
+        clearCart() {
+            this.$toast({
+                type: 'fail',
+                message: '暂未开通\n此功能',
+                // 弹框的时候禁止点击
+                forbidClick: true,
+                duration: 1500,
+            });
+        },
+        // 添加收藏夹
+        addCollect() {
+            this.$toast({
+                type: 'fail',
+                message: '暂未开通\n此功能',
+                // 弹框的时候禁止点击
+                forbidClick: true,
+                duration: 1500,
+            });
+        },
+        // 删除购物车
+        removeCart() {
+            this.$toast({
+                type: 'fail',
+                message: '暂未开通\n此功能',
+                // 弹框的时候禁止点击
+                forbidClick: true,
+                duration: 1500,
+            });
+        },
+        // 获取推荐数据
         getRecommend() {
             getRecommend().then((res) => {
                 this.recommendInfo = res.data.list;
@@ -137,5 +182,22 @@ export default {
 }
 .cart-list {
     height: calc(100% - 50px);
+}
+.cart-submit-bar {
+    bottom: 49px;
+}
+.cart-container .cart-clear-btn {
+    display: flex;
+    align-items: center;
+    margin-right: -5px;
+    border: 0;
+    color: inherit;
+}
+.cart-container .cart-clear-btn:active {
+    background: none;
+}
+.cart-clear-btn img {
+    width: 11px;
+    margin-right: 4px;
 }
 </style>

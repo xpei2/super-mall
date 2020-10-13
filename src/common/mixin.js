@@ -67,13 +67,14 @@ export const backBtnMixin = {
 export const simpleManageMixin = {
     data() {
         return {
+            // 判断是否显示checkbox按钮、底部汇总、管理操作按钮
             isCheckbox: false,
         };
     },
     computed: {
         simpleManageStyle() {
             return this.isCheckbox ? {
-                color: '#ffeb00',
+                color: '#e7ea11',
                 text: '完成'
             } : {
                 color: '#fff',

@@ -26,7 +26,7 @@ import { SubmitBar, Checkbox } from 'vant';
 import { mapGetters } from 'vuex';
 
 export default {
-    name: 'CartBottomBar',
+    name: 'SimpleBottomBar',
     props: {
         checkedColor: String,
         isCheckbox: Boolean,
@@ -86,7 +86,6 @@ export default {
 
 <style scoped>
 .van-submit-bar {
-    bottom: 49px;
     border-top: 1px solid rgb(204, 203, 203);
 }
 .simple-manage-btn {
@@ -105,11 +104,13 @@ export default {
 .simple-manage-btn button {
     height: 24px;
     padding: 0 10px;
-    margin-left: 10px;
     border: 1px solid var(--color-high-text);
     border-radius: 20px;
     color: var(--color-high-text);
     background: none;
+}
+.simple-manage-btn button:nth-of-type(n+2) {
+    margin-left: 10px;
 }
 .simple-manage-btn button:active {
     background-color: #ff819826;
