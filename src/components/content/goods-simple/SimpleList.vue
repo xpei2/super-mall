@@ -13,18 +13,23 @@
                 v-for="item in simpleList"
                 :key="item.id"
                 :product="item"
+                :simple-desc="simpleDesc"
                 :is-checkbox="isCheckbox"
                 :checked-color="checkedColor"
                 :is-foot-btn="isFootBtn"
                 :btn-text="btnText"
             />
             <div class="recommend-info">
-                <msg-title title="你可能还喜欢"/>
+                <msg-title title="你可能还喜欢" />
                 <goods-list class="simple-goods" :goods-list="recommendInfo" />
                 <p class="recommend-msg">没有更多了</p>
             </div>
         </bscroll>
-        <back-top @click.native="backClick" class="simple-back-top" v-show="isBackTop" />
+        <back-top
+            @click.native="backClick"
+            class="simple-back-top"
+            v-show="isBackTop"
+        />
     </div>
 </template>
 
@@ -40,28 +45,37 @@ import { goodsListenerMixin, backTopMixin } from '_con/mixin';
 export default {
     name: 'SimpleList',
     props: {
+        // 是否显示复选按钮
         isCheckbox: {
             type: Boolean,
             default: true,
         },
+        // 复选按钮的颜色
         checkedColor: {
             type: String,
             default: '#ff4500',
         },
+        // 是否显示底部按钮
         isFootBtn: {
             type: Boolean,
             default: false,
         },
+        // 按钮文字
         btnText: {
             type: String,
             default: '找相似',
         },
-        // 购物车数据
+        // 列表数据
         simpleList: {
             type: Array,
             default() {
                 return [];
             },
+        },
+        // 描述位置显示类型
+        simpleDesc: {
+            type: String,
+            default: 'cartDesc',
         },
         // 推荐数据
         recommendInfo: {

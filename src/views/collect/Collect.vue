@@ -28,6 +28,7 @@
                 checked-color="#ff4500"
                 :simple-list="collectList"
                 :recommend-info="recommendInfo"
+                simple-desc="collectDesc"
                 :is-checkbox="isCheckbox"
                 btn-text="找相似"
                 is-foot-btn
@@ -37,12 +38,20 @@
                 class="collect-submit-bar"
                 v-show="isCheckbox"
                 checked-color="#ff4500"
+                :is-price="false"
                 :is-checkbox="isCheckbox"
+                :checked-all="checkedAll"
+                :checked-goods="collectCheckedGoods"
+                @checkedAllClick="checkedAllClick"
             >
                 <template v-slot:manage-btn>
-                    <button @click="collectMore">收藏更多</button>
-                    <button @click="addCart">加入购物车</button>
-                    <van-icon name="delete" class="collect-remove"  @click="removeCollect"/>
+                    <button @click="collectMoreClick">收藏更多</button>
+                    <button @click="addCartClick">加入购物车</button>
+                    <van-icon
+                        name="delete"
+                        class="collect-remove"
+                        @click="removeCollectClick"
+                    />
                 </template>
             </simple-bottom-bar>
         </div>
@@ -58,9 +67,7 @@ import {
     SimpleList,
     SimpleBottomBar,
 } from '_com/content/goods-simple/index';
-import { Icon } from 'vant';
-// 子组件
-import CollectBottomBar from './children/CollectBottomBar';
+import { Icon, Dialog } from 'vant';
 
 // 获取推荐数据
 import { getRecommend } from '_new/recommend';
@@ -83,27 +90,40 @@ export default {
         SimpleList,
         SimpleBottomBar,
         [Icon.name]: Icon,
+        [Dialog.Component.name]: Dialog.Component,
     },
     mixins: [simpleManageMixin, backBtnMixin],
     computed: {
         // 获取状态管理的收藏列表数据
         ...mapGetters(['collectList', 'collectCount']),
-
+        // 判断是否全部选中
+        checkedAll() {
+            return this.collectCounth === 0
+                ? false
+                : !this.collectList.find((item) => !item.checked);
+        },
         // 判断收藏是否为空，是则显示提示内容，否则显示收藏内容
         collectEmpty() {
             return this.collectCount === 0;
         },
+        // 收藏选中的商品
+        collectCheckedGoods() {
+            return this.collectList.filter((item) => item.checked);
+        },
     },
     methods: {
         // 获取状态管理的设置收藏缓存方法
-        ...mapMutations(['setLocalCollect']),
-
+        ...mapMutations(['setLocalCollect', 'removeCollect']),
+        //全选按钮点击时将所有购物车商品的cartChecked设置为全选按钮相反的状态
+        checkedAllClick(bol) {
+            this.collectList.forEach((item) => (item.checked = bol));
+        },
         // 收藏更多按钮
-        collectMore() {
+        collectMoreClick() {
             this.$router.push('/category');
         },
         // 添加购物车
-        addCart() {
+        addCartClick() {
             this.$toast({
                 type: 'fail',
                 message: '暂未开通\n此功能',
@@ -112,15 +132,21 @@ export default {
                 duration: 1500,
             });
         },
-        // 删除购物车
-        removeCollect() {
-            this.$toast({
-                type: 'fail',
-                message: '暂未开通\n此功能',
-                // 弹框的时候禁止点击
-                forbidClick: true,
-                duration: 1500,
-            });
+        // 删除收藏
+        removeCollectClick() {
+            let toastText = '';
+            if (this.collectCheckedGoods.length === 0) {
+                toastText = '你还未选中宝贝哦!';
+            } else {
+                Dialog.confirm({
+                    title: '购物车',
+                    message: '是否确认删除选中商品！',
+                }).then(() => {
+                    this.removeCollect();
+                    toastText = '宝贝删除成功！';
+                });
+            }
+            this.$toast(toastText);
         },
         // 获取推荐列表数据
         getRecommend() {
@@ -173,6 +199,6 @@ export default {
     margin-left: 10px;
 }
 .van-icon-delete::before {
-    transform: scaleX(.8);
+    transform: scaleX(0.8);
 }
 </style>

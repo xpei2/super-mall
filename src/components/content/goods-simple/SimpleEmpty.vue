@@ -1,6 +1,8 @@
 <template>
     <div class="simple-empty">
-        <img margintop src="~_ats/img/cart/cart-empty.png" alt="" />
+        <div margintop class="empty-img">
+            <img src="~_ats/img/cart/cart-empty.png" alt="" />
+        </div>
         <h3 margintop>{{ emptyTitle }}</h3>
         <p margintop>{{ emptyMsg }}</p>
         <van-button
@@ -22,20 +24,20 @@ export default {
     props: {
         emptyTitle: {
             type: String,
-            default: '列表是空的！'
+            default: '列表是空的！',
         },
         emptyMsg: {
             type: String,
-            default: '列表是空的，先去逛逛吧~'
+            default: '列表是空的，先去逛逛吧~',
         },
         emptyRout: {
             type: String,
-            default: 'home'
+            default: 'home',
         },
         emptyButtonTxt: {
             type: String,
-            default: '去逛逛'
-        }
+            default: '去逛逛',
+        },
     },
     components: {
         [Button.name]: Button,
@@ -54,8 +56,13 @@ export default {
 .simple-empty [margintop] {
     margin-top: 20px;
 }
-.simple-empty img {
+.empty-img {
     width: 110px;
+    height: 110px;
+}
+.empty-img img {
+    display: block;
+    width: 100%;
 }
 .simple-empty > h3 {
     font-size: 20px;

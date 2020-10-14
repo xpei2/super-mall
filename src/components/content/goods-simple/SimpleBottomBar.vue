@@ -29,9 +29,21 @@ export default {
     name: 'SimpleBottomBar',
     props: {
         checkedColor: String,
+        // 是否启用价格
+        isPrice: {
+            type: Boolean,
+            default: true,
+        },
         isCheckbox: Boolean,
         // 用传过来的父组件的计算属性，如果将checkedAllClick电机事件绑定到van-checkbox上面，会发生直接修改props值的错误
         checkedAll: Boolean,
+        // 选中的商品
+        checkedGoods: {
+            type: Array,
+            default() {
+                return [];
+            },
+        },
     },
     components: {
         [SubmitBar.name]: SubmitBar,
@@ -39,8 +51,8 @@ export default {
     },
     methods: {
         checkedAllClick() {
-            //全选按钮点击时将所有购物车商品的checked设置为全选按钮相反的状态
-            this.cartList.forEach((item) => (item.checked = !this.checkedAll));
+            // 提交全选事件
+            this.$emit('checkedAllClick', !this.checkedAll);
         },
         onSubmit() {
             if (this.checkedCount === 0) {
@@ -64,16 +76,16 @@ export default {
         ...mapGetters(['cartList']),
         // 计算选中商品的数量
         checkedCount() {
-            return this.cartList.filter((item) => item.checked).length;
+            return this.checkedGoods.length;
         },
         // 计算选中商品的总价格
         totalPrice() {
-            return (
-                this.cartList
-                    .filter((item) => item.checked)
-                    .reduce((pre, item) => pre + item.price * item.count, 0) *
-                100
-            );
+            return this.isPrice
+                ? this.checkedGoods.reduce(
+                      (pre, item) => pre + item.price * item.count,
+                      0
+                  ) * 100
+                : 0;
         },
 
         // 设置提交按钮的商品个数
@@ -87,6 +99,9 @@ export default {
 <style scoped>
 .van-submit-bar {
     border-top: 1px solid rgb(204, 203, 203);
+}
+.van-submit-bar__bar {
+    justify-content: space-between;
 }
 .simple-manage-btn {
     position: absolute;
@@ -109,7 +124,7 @@ export default {
     color: var(--color-high-text);
     background: none;
 }
-.simple-manage-btn button:nth-of-type(n+2) {
+.simple-manage-btn button:nth-of-type(n + 2) {
     margin-left: 10px;
 }
 .simple-manage-btn button:active {

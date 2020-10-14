@@ -1,9 +1,6 @@
 <template>
     <div id="detail">
-        <detail-nav-bar
-            @titleClick="titleClick"
-            ref="detailNavbar"
-        />
+        <detail-nav-bar @titleClick="titleClick" ref="detailNavbar" />
         <bscroll
             class="detail-scroll"
             ref="scroll"
@@ -23,14 +20,8 @@
                 :goods-info="goodsInfo"
                 @imgLoad="goodsImgLoad"
             />
-            <detail-param-info
-                class="set-scroll"
-                :params-info="paramsInfo"
-            />
-            <detail-rate-info
-                class="set-scroll"
-                :rate-info="rateInfo"
-            />
+            <detail-param-info class="set-scroll" :params-info="paramsInfo" />
+            <detail-rate-info class="set-scroll" :rate-info="rateInfo" />
             <goods-list
                 class="detail-goods set-scroll"
                 :goods-list="recommendInfo"
@@ -62,16 +53,9 @@ import DetailRateInfo from './children/DetailRateInfo';
 import DetailBottomBar from './children/DetailBottomBar';
 
 // 获取详情数据
-import {
-    getDetailGoods,
-    BaseInfo,
-    ShopInfo,
-    ParamInfo,
-} from '_new/detail';
+import { getDetailGoods, BaseInfo, ShopInfo, ParamInfo } from '_new/detail';
 // 获取推荐数据
-import {
-    getRecommend,
-} from '_new/recommend';
+import { getRecommend } from '_new/recommend';
 
 // 导入混入
 import {
@@ -215,6 +199,10 @@ export default {
 
         // 监听购物车列表事件，并提交到状态管理处理
         addToCart() {
+            // 获取商品被收藏的数量
+            let collectCount = parseInt(
+                this.baseInfo.columns[1].match(/\d+/)[0]
+            );
             // 获取当前购物车商品的数据
             const cartGoods = {
                 image: this.detailBanners[0].image,
@@ -222,6 +210,12 @@ export default {
                 desc: this.baseInfo.desc,
                 price: this.baseInfo.realPrice,
                 id: this.goodsId,
+                collect:
+                    collectCount >= 10000
+                        ? `${Math.floor(collectCount / 10000)}万+人收藏`
+                        : collectCount >= 1000 && collectCount < 10000
+                        ? `${Math.floor(collectCount / 1000)}000+人收藏`
+                        : `${collectCount}人收藏`,
             };
             // 引用Vuex的actions里面的方法
             this.setCartGoods(cartGoods)

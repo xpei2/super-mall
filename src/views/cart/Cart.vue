@@ -32,6 +32,7 @@
                 checked-color="#ff4500"
                 :simple-list="cartList"
                 :recommend-info="recommendInfo"
+                simple-desc="cartDesc"
             />
             <!-- 底部汇总 -->
             <simple-bottom-bar
@@ -39,13 +40,15 @@
                 checked-color="#ff4500"
                 :is-checkbox="isCheckbox"
                 :checked-all="checkedAll"
+                :checked-goods="cartCheckedGoods"
+                @checkedAllClick="checkedAllClick"
             >
                 <template v-slot:manage-btn>
-                    <button class="cart-clear-btn" @click="clearCart">
+                    <button class="cart-clear-btn" @click="clearCartClick">
                         <img src="~_ats/img/common/clear.png" alt="" />清理
                     </button>
-                    <button @click="addCollect">加入收藏夹</button>
-                    <button @click="removeCart">删除</button>
+                    <button @click="addCollectClick">加入收藏夹</button>
+                    <button @click="removeCartClick">删除</button>
                 </template>
             </simple-bottom-bar>
         </div>
@@ -60,9 +63,7 @@ import {
     SimpleList,
     SimpleBottomBar,
 } from '_com/content/goods-simple/index';
-
-// 子组件
-// import CartBottomBar from './children/CartBottomBar';
+import { Dialog } from 'vant';
 
 // 获取推荐数据
 import { getRecommend } from '_new/recommend';
@@ -84,11 +85,13 @@ export default {
         SimpleEmpty,
         SimpleList,
         SimpleBottomBar,
+        [Dialog.Component.name]: Dialog.Component,
     },
     computed: {
-        ...mapGetters(['cartCount', 'cartList']),
+        ...mapGetters(['cartCount', 'cartList', 'collectList']),
+        // 判断是否全部选中
         checkedAll() {
-            return this.cartList.length === 0
+            return this.cartCount === 0
                 ? false
                 : !this.cartList.find((item) => !item.checked);
         },
@@ -96,39 +99,69 @@ export default {
         cartEmpty() {
             return this.cartCount === 0;
         },
+        // 购物车选中的商品
+        cartCheckedGoods() {
+            return this.cartList.filter((item) => item.checked);
+        },
     },
     mixins: [simpleManageMixin],
     methods: {
-        ...mapMutations(['setLocalCart']),
+        ...mapMutations([
+            'setLocalCart',
+            'clearCart',
+            'removeCart',
+            'addCollect',
+        ]),
+        //全选按钮点击时将所有购物车商品的checked设置为全选按钮相反的状态
+        checkedAllClick(bol) {
+            this.cartList.forEach((item) => (item.checked = bol));
+        },
         // 清理购物车
-        clearCart() {
-            this.$toast({
-                type: 'fail',
-                message: '暂未开通\n此功能',
-                // 弹框的时候禁止点击
-                forbidClick: true,
-                duration: 1500,
+        clearCartClick() {
+            Dialog.confirm({
+                title: '购物车',
+                message: '是否确认清理购物车！',
+            }).then(() => {
+                this.clearCart();
+                this.$toast('购物车清理成功！');
             });
         },
         // 添加收藏夹
-        addCollect() {
-            this.$toast({
-                type: 'fail',
-                message: '暂未开通\n此功能',
-                // 弹框的时候禁止点击
-                forbidClick: true,
-                duration: 1500,
-            });
+        addCollectClick() {
+            let toastText = '';
+            if (this.cartCheckedGoods.length === 0) {
+                toastText = '你还未选中宝贝哦!';
+            } else {
+                this.cartCheckedGoods.forEach((cartItem) => {
+                    if (
+                        !this.collectList.find(
+                            (item) => item.id === cartItem.id
+                        )
+                    ) {
+                        delete cartItem.count;
+                        this.addCollect(cartItem);
+                    }
+                });
+                this.checkedAllClick(false);
+                toastText = '已添加收藏夹！';
+            }
+            this.$toast(toastText);
         },
         // 删除购物车
-        removeCart() {
-            this.$toast({
-                type: 'fail',
-                message: '暂未开通\n此功能',
-                // 弹框的时候禁止点击
-                forbidClick: true,
-                duration: 1500,
-            });
+        removeCartClick() {
+            let toastText = '';
+            if (this.cartCheckedGoods.length === 0) {
+                toastText = '你还未选中宝贝哦!';
+            } else {
+                Dialog.confirm({
+                    title: '购物车',
+                    message: '是否确认删除选中商品！',
+                }).then(() => {
+                    this.removeCart();
+                    toastText = '宝贝删除成功！';
+                });
+            }
+            this.$toast(toastText);
         },
         // 获取推荐数据
         getRecommend() {

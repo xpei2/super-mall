@@ -5,6 +5,7 @@ import {
     ADD_CART_COUNTER,
     ADD_CART,
     CLEAR_CART,
+    REMOVE_CART,
     SET_LOCAL_COLLECT,
     ADD_COLLECT,
     REMOVE_COLLECT,
@@ -32,14 +33,24 @@ export default {
     // 添加新商品到购物车列表，并更新缓存
     [ADD_CART](state, data) {
         data.count = 1;
-        data.checked = false
+        data. checked = false
         state.cartList.push(data);
         //储存缓存
         localStorage.setItem('cartList', JSON.stringify(state.cartList))
     },
-    // 删除购物车列表
+    // 清理购物车列表
     [CLEAR_CART](state) {
-        console.log('删除购物车');
+        state.cartList = [];
+        //储存缓存
+        localStorage.setItem('cartList', JSON.stringify(state.cartList))
+    },
+    // 删除购物车列表
+    [REMOVE_CART](state) {
+        state.cartList = state.cartList.filter((item) => {
+            return item.checked === false
+        });
+        //储存缓存
+        localStorage.setItem('cartList', JSON.stringify(state.cartList))
     },
     // 设置收藏列表的本地缓存数据
     [SET_LOCAL_COLLECT](state, data) {
@@ -53,15 +64,11 @@ export default {
         localStorage.setItem('collectList', JSON.stringify(state.collectList))
     },
     // 删除收藏列表中的指定商品，并更新缓存
-    [REMOVE_COLLECT](state, id) {
+    [REMOVE_COLLECT](state) {
         state.collectList = state.collectList.filter((item) => {
-            return item.id !== id
+            return item.checked === false
         })
         //储存缓存
         localStorage.setItem('collectList', JSON.stringify(state.collectList))
     },
-    // 删除收藏列表
-    [CLEAR_COLLECT](state) {
-        console.log('删除收藏');
-    }
 }
