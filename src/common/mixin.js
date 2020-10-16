@@ -86,8 +86,5 @@ export const simpleManageMixin = {
         simpleManage() {
             this.isCheckbox = !this.isCheckbox;
         },
-    },
-    activated() {
-        this.isCheckbox = false
     }
 }

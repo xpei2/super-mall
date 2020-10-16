@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <keep-alive exclude="Detail,Collect">
+        <keep-alive exclude="Detail,Collect,Cart,Profile">
             <router-view />
         </keep-alive>
         <main-tab-bar v-show="$store.state.tabBarShow"/>

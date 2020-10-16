@@ -28,6 +28,12 @@ module.exports = {
     },
     // 配置规则
     chainWebpack: (config) => {
+        // 使用配置 html-webpack-plugin 插件 生成发布html标题
+        config.plugin('html')
+            .tap(args => {
+                args[0].title = '千羽商城'
+                return args
+            })
         // 文件夹简写
         config.resolve.alias
             .set('_ats', resolve('src/assets'))
@@ -40,5 +46,6 @@ module.exports = {
             .rule('images')
             .test(/\.(png|jpe?g|gif|webp|jfif)(\?.*)?$/)
     },
+
 
 }

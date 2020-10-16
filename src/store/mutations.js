@@ -58,6 +58,7 @@ export default {
     },
     // 添加商品到收藏列表，并更新缓存
     [ADD_COLLECT](state, data) {
+        delete data.count;
         data.checked = false
         state.collectList.push(data);
         //储存缓存

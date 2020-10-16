@@ -99,7 +99,6 @@ export default {
             this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
         };
     },
-
     activated() {
         this.$refs.scroll.refresh();
     },

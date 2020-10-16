@@ -11,6 +11,7 @@
             :desc="descText"
             :title="product.title"
             :thumb="product.image"
+            @click="goodsClick"
         >
             <template v-if="isFootBtn" #footer>
                 <van-button
@@ -27,6 +28,7 @@
 </template>
 
 <script>
+import { getDetailGoods } from '_new/detail';
 import { Checkbox, Card, Button } from 'vant';
 
 export default {
@@ -62,6 +64,29 @@ export default {
                     break;
             }
             return desc;
+        },
+    },
+    methods: {
+        goodsClick() {
+            // 点击时暂时取消加载提示
+            this.$store.commit('setLoading', false);
+            // 点击时先获取数据查看商品是否存在
+            getDetailGoods(this.product.id)
+                .then(() => {
+                    // 如果成功，开启加载提示，并跳转至详情页
+                    this.$store.commit('setLoading', true);
+                    this.$router.push('/detail/' + this.product.id);
+                })
+                .catch(() => {
+                    this.$toast({
+                        type: 'success',
+                        icon: 'fail',
+                        message: '商品已下架！',
+                        // 弹框的时候禁止点击
+                        forbidClick: true,
+                        duration: 1500,
+                    });
+                });
         },
     },
 };

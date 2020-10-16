@@ -118,8 +118,9 @@ export default {
         },
         // 清理购物车
         clearCartClick() {
+            // vant的弹出提示
             Dialog.confirm({
-                title: '购物车',
+                title: '收藏夹',
                 message: '是否确认清理购物车！',
             }).then(() => {
                 this.clearCart();
@@ -128,40 +129,45 @@ export default {
         },
         // 添加收藏夹
         addCollectClick() {
-            let toastText = '';
             if (this.cartCheckedGoods.length === 0) {
-                toastText = '你还未选中宝贝哦!';
+                this.$toast('你还未选中宝贝哦！');
             } else {
-                this.cartCheckedGoods.forEach((cartItem) => {
-                    if (
-                        !this.collectList.find(
-                            (item) => item.id === cartItem.id
-                        )
-                    ) {
-                        delete cartItem.count;
-                        this.addCollect(cartItem);
-                    }
+                // vant的弹出提示
+                Dialog.confirm({
+                    title: '收藏夹',
+                    message: '是否确认将选中商品添加收藏夹！',
+                }).then(() => {
+                    this.cartCheckedGoods.forEach((cartItem) => {
+                        if (
+                            !this.collectList.find(
+                                (item) => item.id === cartItem.id
+                            )
+                        ) {
+                            // 深拷贝，创建新的指针，防止更改收藏数据导致购物车数据跟着改变
+                            this.addCollect(JSON.parse(JSON.stringify(cartItem)));
+                        }else {
+                            return
+                        }
+                    });
+                    this.checkedAllClick(false);
+                    this.$toast('已添加收藏夹！');
                 });
-                this.checkedAllClick(false);
-                toastText = '已添加收藏夹！';
             }
-            this.$toast(toastText);
         },
         // 删除购物车
         removeCartClick() {
-            let toastText = '';
             if (this.cartCheckedGoods.length === 0) {
-                toastText = '你还未选中宝贝哦!';
+                this.$toast('你还未选中宝贝哦！');
             } else {
+                // vant的弹出提示
                 Dialog.confirm({
                     title: '购物车',
                     message: '是否确认删除选中商品！',
                 }).then(() => {
                     this.removeCart();
-                    toastText = '宝贝删除成功！';
+                    this.$toast('宝贝删除成功！');
                 });
             }
-            this.$toast(toastText);
         },
         // 获取推荐数据
         getRecommend() {
